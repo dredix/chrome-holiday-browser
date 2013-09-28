@@ -1,0 +1,20 @@
+{
+  "name": "Holiday by MooresCloud",
+  "description": "Network browser for Holiday by MooresCloud",
+  "manifest_version": 2,
+  "version": "0.1",
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "permissions": [
+    {
+      "socket": [
+        "udp-bind:*",
+        "udp-send-to:*"
+      ]
+    }
+  ],
+  "icons": { "128": "img/holiday-114x114.png", "16": "img/holiday-57x57.png" }
+}
