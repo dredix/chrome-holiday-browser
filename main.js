@@ -96,8 +96,9 @@ function Holiday(address) {
 function demoStart() {
   
   console.log("demoStart");
-  var addr = 'http://' + $('#selector').val() + ':80/thingy.html';
-  window.open(addr, "popupWindow", "width=600,height=600,scrollbars=yes");  
+  var addr = 'http://' + $('#selector').val() + '/';
+  window.open(addr/*, /*"popupWindow", "width=600,height=600,scrollbars=yes"*/);
+  //window.location.href = addr;  
   return;
 
 }
