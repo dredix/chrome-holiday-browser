@@ -189,7 +189,8 @@ ServiceFinder.prototype.shutdown = function() {
   });
 }
 
-var holidays = null;
+var holidays = new Array();
+var refresher = null;
 
 window.addEventListener('load', function() {
   var results = document.getElementById('results');
@@ -232,13 +233,10 @@ window.addEventListener('load', function() {
       outer = finder.ips;
       inner = finder.services;
     }
-    // TODO: render information about outer/inner
-    // for IPs, render 'last seen at...'
-    // for services, render known service type.
 
     //results.innerHTML = '';
     outer.apply(finder).forEach(function(o) {
-      console.log(o);
+      //console.log(o);
       var li = document.createElement('li');
       li.innerHTML = getHtml_(outer, o);
       if (o == '_iotas') {
@@ -251,12 +249,13 @@ window.addEventListener('load', function() {
         li.innerHTML = getHtml_(inner, i);
         //ul.appendChild(li);
         if (o == '_iotas') {
-          console.log(i);
-          if (holidays.indexOf(i) != -1) {
+          //console.log(i);
+          addToList(i);
+          /*if (holidays.indexOf(i) != -1) {
             console.log("Skipping...")
           } else {
             holidays.push(i);
-          }
+          }*/
           //ul.appendChild(li);
 
         }
@@ -265,21 +264,6 @@ window.addEventListener('load', function() {
     });
   };
 
-  // Configure the refresh button, then immediately invoke it.
-  /*var refreshBtn = document.getElementById('btn-refresh');
-  refreshBtn.addEventListener('click', function() {
-    console.log("refresh.click");
-    results.innerHTML = '';
-    results.classList.add('working');
-
-    finder && finder.shutdown();
-    finder = new ServiceFinder(callback_);
-    holidays = new Array();
-    // After 1 seconds, we should have our list.
-    setTimeout(function() { doneScanning(); }, 1000);
-  });
-  refreshBtn.click();*/
-
   function forceRefresh() {
     console.log("forceRefresh");
     //results.innerHTML = '';
@@ -287,46 +271,37 @@ window.addEventListener('load', function() {
 
     finder && finder.shutdown();
     finder = new ServiceFinder(callback_);
-    holidays = new Array();
+    //holidays = new Array();
     // After 1 seconds, we should have our list.
     setTimeout(function() { doneScanning(); }, 1000);
   }
-  forceRefresh();
+  refresher = forceRefresh;
+  refresher();
 
-  // Configure the mode button, then immediately invoke it twice to reset to
-  // the default state (show by service).
-  /*var modeBtn = document.getElementById('btn-mode');
-  modeBtn.addEventListener('click', function() {
-    var h = document.getElementById('mode-span');
-    /*if (mode == 'service') {
-      mode = 'ip';
-      h.innerText = 'IP';
-    } else {
-      mode = 'service';
-      h.innerText = 'Service';
-    }*/
-    /*if (finder) {
-      callback_();
-    }
-  });
-  modeBtn.click(); 
-  modeBtn.click();*
-
-  // Configure the close button.
-  /*document.getElementById('btn-close').addEventListener('click', function() {
-    window.close();
-  });*/
 });
 
-function selectClick() {
-  console.log('selectClick');
+function addToList(ipaddr) {
+
+  // Add the string to the list of holidays if unique
+  for (i=0; i < holidays.length; i++) {
+    //console.log(holidays[i] + " comparing " + ipaddr);
+    if (holidays[i].indexOf(ipaddr) != -1) {
+      //console.log(holidays[i] + " matches " + ipaddr + ", skipping.");
+      return;
+    }
+  }
+  holidays.push(ipaddr);
   return;
 }
 
 var imginline = '<img src="img/holiday-57x57.png" />';
 function doneScanning() {
-  console.log(holidays.toString());
-  //var textplace = document.getElementById('main');
+  //console.log(holidays.toString());
+
+  // Empty the elements before filling them again.
+  $('#holiday-list').contents().remove();
+  $('#selector').contents().remove();
+
   for (j=0; j < holidays.length; j++) {
     //var newp = document.createElement('p');
     //newp.innerHTML = imginline+'<a href="http://'+holidays[j]+'/" target=_blank>'+holidays[j]+'</a>';
@@ -334,11 +309,6 @@ function doneScanning() {
     //$('#holiday-list').append('<li id="holiday_'+j.toString()+'"><a href="http://'+holidays[j]+'/" target=_blank onclick="selectClick();">'+imginline+holidays[j]+'</a></li>');
     $('#holiday-list').append('<li>'+imginline+'<span class="entry">'+holidays[j]+'</span></li>');
     $('#selector').append('<option>'+holidays[j]+'</option>');
-
-    /*$('#holiday_'+j.toString()).click( function() { 
-      console.log('clicky');
-    });*/
   }
-  //$('#holiday-list').listview('refresh');
 }
 

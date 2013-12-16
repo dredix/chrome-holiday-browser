@@ -96,11 +96,15 @@ function Holiday(address) {
 function demoStart() {
   
   console.log("demoStart");
-  var addr = 'http://' + $('#selector').val() + '/';
-  window.open(addr/*, /*"popupWindow", "width=600,height=600,scrollbars=yes"*/);
-  //window.location.href = addr;  
+  //var addr = 'http://' + $('#selector').val() + '/';
+  var iotasURL = 'http://' + $('#selector').val() + '/iotas/0.1/device/moorescloud.holiday/localhost/hostname' 
+  //window.open(addr/*, /*"popupWindow", "width=600,height=600,scrollbars=yes"*/);
+  //copyToClipboard($('#selector').val());
+  $.getJSON(iotasURL, function( data ) {
+    var aName = data.hostname;
+    console.log("Hostname is ", aName);
+  });
   return;
-
 }
 
 // Lordy, this is one of the reasons I hate Javascript
@@ -109,6 +113,6 @@ $( document ).ready( function() {
   console.log("Doing the ready");
   // And here's the stuff we do.
   $("#thebutton").click(function () {
-    demoStart();
+    refresher();
   });
 });
